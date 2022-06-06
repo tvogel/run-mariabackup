@@ -1,8 +1,9 @@
 # README
 
-*forked from [jmfederico/run-xtrabackup.sh](https://gist.github.com/jmfederico/1495347)*
+*   *forked from [omegazeng/run-mariabackup](https://github.com/omegazeng/run-mariabackup)*
+    *   *forked from [jmfederico/run-xtrabackup.sh](https://gist.github.com/jmfederico/1495347)*
 
-Note: have tested on Ubuntu 18.04 with MariaDB 10.3
+Note: have tested on Debian 11 with MariaDB 10.5
 
 ## Links
 
@@ -86,4 +87,13 @@ chown -R mysql:mysql /data/mysql/
 service mariadb start
 
 # done!
+```
+
+## Bash variant
+
+This script run over the root user and don't require a separat user.
+
+```bash
+curl https://codeberg.org/YoSiJo/run-mariabackup/raw/branch/master/run-mariabackup.bash -o /usr/local/bin/run-mariabackup
+chmod +x /usr/local/bin/run-mariabackup
 ```
