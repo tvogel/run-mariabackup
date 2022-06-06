@@ -10,7 +10,7 @@ KEEP=3                                    # Number of additional backups cycles 
 LOCKDIR=/tmp/mariabackup.lock             # Path of lockfile
 _mariabackup_options=()
 
-[ -z "${_user}" ] && _mariabackup_options=("${_mariabackup_options[@]}" "--user=${_user}")
+[ -n "${_user+x}" ] && _mariabackup_options=("${_mariabackup_options[@]}" "--user=${_user}")
 
 ReleaseLockAndExitWithCode () {
   if rmdir "${LOCKDIR}"
