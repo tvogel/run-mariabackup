@@ -51,7 +51,7 @@ echo
 [ ! -d "${INCRBACKDIR}" ] || [ ! -w "${INCRBACKDIR}" ] &&
   ( echo "${INCRBACKDIR} does not exist or is not writable"; exit 1 )
 
-mysqladmin ping &> /dev/null &&
+! mysqladmin ping &> /dev/null &&
   ( echo "HALTED: MySQL ping failed."; exit 1 )
 
 GetLockOrDie
