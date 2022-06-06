@@ -88,3 +88,12 @@ service mariadb start
 
 # done!
 ```
+
+## Bash variant
+
+This script run over the root user and don't require a separat user.
+
+```bash
+curl https://codeberg.org/YoSiJo/run-mariabackup/raw/branch/master/run-mariabackup.bash -o /usr/local/bin/run-mariabackup
+chmod +x /usr/local/bin/run-mariabackup
+```
