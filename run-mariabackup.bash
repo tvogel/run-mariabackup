@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
 BACKCMD=mariabackup                       # Galera Cluster uses mariabackup instead of xtrabackup.
+_user=root
 GZIPCMD=gzip                              # pigz (a parallel implementation of gzip) could be used if available.
 STREAMCMD=xbstream                        # sometimes named mbstream to avoid clash with Percona command
 BACKDIR=/var/backup/mariadb               # Backup target
 FULLBACKUPCYCLE="$(( 7 * 24 * 60 * 60 ))" # Create a new full backup every X seconds
 KEEP=3                                    # Number of additional backups cycles a backup should be kept for.
 LOCKDIR=/tmp/mariabackup.lock             # Path of lockfile
+_mariabackup_options=()
+
+[ -z "${_user}" ] && _mariabackup_options=("${_mariabackup_options[@]}" "--user=${_user}")
 
 ReleaseLockAndExitWithCode () {
   if rmdir "${LOCKDIR}"
@@ -91,7 +95,7 @@ if [ "${LATEST}" ] && [ "$(( AGE + FULLBACKUPCYCLE + 5 ))" -ge "${START}" ]; the
   mkdir -p "${TARGETDIR}"
 
   # Create incremental Backup
-  ${BACKCMD} --backup --extra-lsndir="${TARGETDIR}" --incremental-basedir="${INCRBASEDIR}" --stream="${STREAMCMD}" | ${GZIPCMD} > "${TARGETDIR}/backup.stream.gz"
+  ${BACKCMD} "${_mariabackup_options[@]}" --backup --extra-lsndir="${TARGETDIR}" --incremental-basedir="${INCRBASEDIR}" --stream="${STREAMCMD}" | ${GZIPCMD} > "${TARGETDIR}/backup.stream.gz"
 else
   echo 'New full backup'
 
@@ -99,7 +103,7 @@ else
   mkdir -p "${TARGETDIR}"
 
   # Create a new full backup
-  ${BACKCMD} --backup --extra-lsndir="${TARGETDIR}" --stream="${STREAMCMD}" | $GZIPCMD > "${TARGETDIR}/backup.stream.gz"
+  ${BACKCMD} "${_mariabackup_options[@]}" --backup --extra-lsndir="${TARGETDIR}" --stream="${STREAMCMD}" | $GZIPCMD > "${TARGETDIR}/backup.stream.gz"
 fi
 
 MINS="$(( FULLBACKUPCYCLE * ( KEEP + 1 ) / 60 ))"
