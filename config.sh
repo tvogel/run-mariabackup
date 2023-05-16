@@ -13,3 +13,4 @@ MYSQL_USER=root                                    # MariaDB database backup use
 MYSQL_DATA_PATH=/var/lib/mysql                     # Path to the MariaDB data files
 MYSQL_FS_USER=mysql                                # System user for the MariaDB data files
 MYSQL_FS_GROUP=mysql                               # System group for the MariaDB data files
+LIMIT_OPEN_FILES=65535                             # Limit to raise the limit of file-descriptors to

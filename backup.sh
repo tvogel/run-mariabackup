@@ -41,6 +41,8 @@ mkdir -p "${incr_backup_path}"
 ! mysqladmin ping &> /dev/null &&
   ( echo "HALTED: MySQL ping failed."; exit 1 )
 
+[ -n "${LIMIT_OPEN_FILES}" ] && ulimit -n ${LIMIT_OPEN_FILES}
+
 GetLockOrDie
 
 latest_base_backup="$(find "${base_backup_path}" -mindepth 1 -maxdepth 1 -type d -printf "%P\n" | sort -nr | head -1)"
