@@ -74,7 +74,7 @@ if ! BaseBackupRequested && [ "${latest_base_backup}" ] && [ "$(( base_timestamp
 
   # Create incremental Backup
   DumpSchema
-  ${MARIABACKUP} "${MARIABACKUP_OPTIONS[@]}" --backup --extra-lsndir="${target_dir}" --incremental-basedir="${incremental_basedir}" --stream="${STREAM}" | ${COMPRESS} > "${target_dir}/backup.stream.${COMPRESS_EXT}"
+  (${MARIABACKUP} "${MARIABACKUP_OPTIONS[@]}" --backup --extra-lsndir="${target_dir}" --incremental-basedir="${incremental_basedir}" --stream="${STREAM}" | ${COMPRESS} > "${target_dir}/backup.stream.${COMPRESS_EXT}") 2>&1
 else
   echo 'New full backup'
 
@@ -84,7 +84,7 @@ else
 
   # Create a new full backup
   DumpSchema
-  ${MARIABACKUP} "${MARIABACKUP_OPTIONS[@]}" --backup --extra-lsndir="${target_dir}" --stream="${STREAM}" | ${COMPRESS} > "${target_dir}/backup.stream.${COMPRESS_EXT}"
+  (${MARIABACKUP} "${MARIABACKUP_OPTIONS[@]}" --backup --extra-lsndir="${target_dir}" --stream="${STREAM}" | ${COMPRESS} > "${target_dir}/backup.stream.${COMPRESS_EXT}") 2>&1
 fi
 
 max_age_minutes="$(( FULLBACKUP_EVERY_SECONDS * ( EXTRA_FULL_BACKUPS_TO_KEEP + 1 ) / 60 ))"
