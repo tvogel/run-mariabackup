@@ -23,7 +23,8 @@ GetLockOrDie () {
 
 FormatSeconds () {
   seconds="$1"
-  date -ud @${seconds} +"$(( seconds/3600/24 ))d %Hh %Mm %Ss" | sed -r 's/\b0([0-9])/\1/g; s/ 0(s|m|h)//g';
+  date -ud @${seconds} +"$(( seconds/3600/24 ))d %Hh %Mm %Ss" \
+    | sed -r 's/\b0([0-9])/\1/g; s/\b0(s|m|h|d)//g; s/ +/ /g; s/^ +//; s/ +$//; s/^$/0s/'
 }
 
 mysql_user_arg=""
