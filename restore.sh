@@ -17,7 +17,7 @@ SecureFileDir () {
   if ! secure_file_dir=$(mysql ${mysql_user_arg} -Ne "select @@secure_file_priv" 2>/dev/null) \
     || [ "${secure_file_dir}" = "NULL" ]
   then
-    echo "${leafdir}"
+    echo "${TMPDIR}"
     return 0
   fi
   echo "${secure_file_dir}"

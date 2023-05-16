@@ -14,3 +14,4 @@ MYSQL_DATA_PATH=/var/lib/mysql                     # Path to the MariaDB data fi
 MYSQL_FS_USER=mysql                                # System user for the MariaDB data files
 MYSQL_FS_GROUP=mysql                               # System group for the MariaDB data files
 LIMIT_OPEN_FILES=65535                             # Limit to raise the limit of file-descriptors to
+TMPDIR=/tmp                                        # Temp dir, must be visible by MYSQL_FS_USER
