@@ -54,7 +54,9 @@ Edit `config.sh` to match your needs and environment.
 You can place a file called `base-backup.request` into `${BACKUP_PATH}` in order to request a base
 (non-incremental) backup (e.g. using a weekly cron-job on Sunday night).
 
-For an all-database restore:
+For an all-database restore, go to the directory with your intended backup state, 
+i.e. `${BACKUP_PATH}/base/yyyy-mm-dd_HH-MM-SS` 
+or `${BACKUP_PATH}/incr/yyyy-mm-dd_HH-MM-SS/yyyy-mm-dd_HH-MM-SS` and run:
 
     MYSQL_PASSWORD=YourPassword bash run-mariabackup/restore.sh
 
