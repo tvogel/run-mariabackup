@@ -136,7 +136,6 @@ echo "Preparation complete."
 
 cd "${leafdir}"
 
-
 echo "Restoring data"
 if [ -z "${src_database}" ]; then # all-database restore
   echo "Stopping MariaDB"
@@ -145,11 +144,11 @@ if [ -z "${src_database}" ]; then # all-database restore
   mv "${MYSQL_DATA_PATH}" "${MYSQL_DATA_PATH}_before_restore"
   echo "Copying files to ${MYSQL_DATA_PATH}"
   ${MARIABACKUP} --copy-back --target-dir "${leafdir}/restore"
-  rm -rf "${leafdir}/restore"
   chown -R ${MYSQL_FS_USER}:${MYSQL_FS_GROUP} "${MYSQL_DATA_PATH}"
   echo "Starting MariaDB"
   systemctl start ${MYSQL_SERVICE}
   trap EXIT
+  rm -rf restore
 else # single-database restore
   if [ ! -e "${leafdir}/restore/${src_database}" ]; then
     echo "${leafdir}/restore/${src_database} not found." >&2
@@ -165,13 +164,8 @@ else # single-database restore
     exit 1
   fi
 
-  securefiledir="$(SecureFileDir)/restore_${dst_database}"
-  mkdir -p "${securefiledir}"
+  securefiledir="$(mktemp -d --tmpdir=$(SecureFileDir) restore_${dst_database}.XXXXXXXXXX)"
   chown -R ${MYSQL_FS_USER}:${MYSQL_FS_GROUP} "${securefiledir}"
-  rm -rf ${securefiledir}/drop_fk.sql \
-    ${securefiledir}/discard_tablespace.sql \
-    ${securefiledir}/import_tablespace.sql \
-    ${securefiledir}/add_fk.sql
 
   mysql ${mysql_user_arg} information_schema <<SQL
 select concat("ALTER TABLE ",table_name," DISCARD TABLESPACE;")  AS discard_tablespace
@@ -240,11 +234,7 @@ SQL
   echo "Adding foreign keys"
   mysql ${mysql_user_arg} "${dst_database}" < "${securefiledir}/add_fk.sql"
 
-  rm -rf ${securefiledir}/drop_fk.sql \
-    ${securefiledir}/discard_tablespace.sql \
-    ${securefiledir}/import_tablespace.sql \
-    ${securefiledir}/add_fk.sql \
-    restore
+  rm -rf "${securefiledir}" restore
 
   cat <<MSG
 Database restored to ${dst_database}. If you are happy with its state, move it to the original database using:
