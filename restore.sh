@@ -14,7 +14,13 @@ ExistsDatabase () {
 }
 
 SecureFileDir () {
-  mysql ${mysql_user_arg} -Ne "select @@secure_file_priv" 2>/dev/null
+  if ! secure_file_dir=$(mysql ${mysql_user_arg} -Ne "select @@secure_file_priv" 2>/dev/null) \
+    || [ "${secure_file_dir}" = "NULL" ]
+  then
+    echo "${leafdir}"
+    return 0
+  fi
+  echo "${secure_file_dir}"
 }
 
 IsIncremental() {
@@ -159,7 +165,7 @@ else # single-database restore
     exit 1
   fi
 
-  securefiledir="$(SecureFileDir || echo "${leafdir}")/restore_{$dst_database}"
+  securefiledir="$(SecureFileDir)/restore_${dst_database}"
   mkdir -p "${securefiledir}"
   chown -R ${MYSQL_FS_USER}:${MYSQL_FS_GROUP} "${securefiledir}"
   rm -rf ${securefiledir}/drop_fk.sql \
