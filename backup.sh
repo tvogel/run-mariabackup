@@ -61,7 +61,7 @@ if ! BaseBackupRequested && [ "${latest_base_backup}" ] && [ "$(( base_timestamp
       exit 1
     )
 
-  latest_incr_backup="$(find "${incr_backup_path}/${latest_base_backup}" -mindepth 1  -maxdepth 1 -type d | sort -nr | head -1)"
+  latest_incr_backup="$(find . -mindepth 2  -maxdepth 2 -name xtrabackup_checkpoints -printf '%h\n' | sort -nr | head -1)"
   if [ "${latest_incr_backup}" ]; then
     # This is a 2+ incremental backup
     incremental_basedir="${latest_incr_backup}"
